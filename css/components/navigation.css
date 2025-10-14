@@ -1,0 +1,44 @@
+/* ===== NAVEGACIÓN POR PUNTOS ===== */
+.nav-dots {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: var(--secondary-color);
+  padding: var(--spacing-sm) 0;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  z-index: 1000;
+  text-align: center;
+}
+
+.nav-dots ul {
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-md);
+  margin: 0;
+  padding: 0;
+}
+
+.nav-dots li a {
+  display: block;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.4);
+  text-indent: -9999px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.nav-dots li a.active,
+.nav-dots li a:hover {
+  background-color: #fff;
+  transform: scale(1.2);
+  border-color: var(--primary-color);
+}
+
+.nav-dots li a:hover:not(.active) {
+  background-color: rgba(255, 255, 255, 0.7);
+}

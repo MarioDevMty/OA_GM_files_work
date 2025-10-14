@@ -1,0 +1,83 @@
+/* ===== ESTILOS ESPECÍFICOS PARA PÁGINA GRÁFICO ===== */
+
+/* Header con logos */
+.logo-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 700px;
+    padding: var(--spacing-lg) 0;
+    margin: 0 auto;
+    animation: fadeIn 1.5s ease-in-out;
+}
+
+.logo {
+    width: 25%;
+    height: auto;
+    max-height: 150px;
+    transition: transform 0.3s ease;
+}
+
+.logo:hover {
+    transform: scale(1.05);
+}
+
+/* Contenido introductorio */
+.content-page p {
+    text-align: center;
+    margin-bottom: var(--spacing-md);
+    font-size: var(--font-size-lg);
+    color: var(--secondary-color);
+}
+
+/* Display de función */
+.function-display {
+    font-size: var(--font-size-xl);
+    text-align: center;
+    margin: var(--spacing-xl) 0;
+    min-height: 60px;
+    padding: var(--spacing-lg);
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: var(--border-radius);
+    border-left: 4px solid var(--primary-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Tutorial y ejemplos */
+.intro-image-container {
+    display: none;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto var(--spacing-lg);
+    padding: var(--spacing-md);
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.intro-image-container img {
+    width: 100%;
+    height: auto;
+    border: 2px solid var(--primary-color);
+    border-radius: var(--border-radius-sm);
+}
+
+/* Responsive para página gráfico */
+@media (max-width: 768px) {
+    .logo-container {
+        flex-direction: column;
+        gap: var(--spacing-md);
+    }
+    
+    .logo {
+        width: 50%;
+    }
+    
+    .function-display {
+        font-size: var(--font-size-lg);
+        padding: var(--spacing-md);
+    }
+}

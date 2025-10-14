@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teoría - Gráficas de Funciones</title>
+    
+    <!-- CSS Organizado -->
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components/navigation.css">
+    <link rel="stylesheet" href="css/components/cards.css">
+    <link rel="stylesheet" href="css/components/buttons.css">
+    <link rel="stylesheet" href="css/pages/grafico.css">
+    
+    <!-- MathJax para ecuaciones -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        /* Estilos específicos para teoría */
+        .equation-box {
+            background: var(--light-gray);
+            border: 1px solid #e0e6ed;
+            padding: var(--spacing-lg);
+            margin: var(--spacing-lg) 0;
+            border-radius: var(--border-radius);
+            border-left: 4px solid var(--primary-color);
+        }
+        .navigation-buttons {
+            text-align: center;
+            margin: var(--spacing-lg) 0;
+        }  
+        .table-container {
+            overflow-x: auto;
+            margin: var(--spacing-lg) 0;
+        }
+
+        .coordinate-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .coordinate-table th, 
+        .coordinate-table td {
+            border: 1px solid #ddd;
+            padding: var(--spacing-sm);
+            text-align: center;
+        }
+
+        .coordinate-table th {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .katex {
+            white-space: nowrap;
+        }
+        .content-page p {
+            text-align: justify;
+            text-justify: inter-word;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="nav-dots">
+        <ul>
+            <li><a href="index.html">1</a></li>
+            <li><a href="teoria.html" class="active">2</a></li>
+            <li><a href="grafico.html">3</a></li>
+            <li><a href="aplicacion.html">4</a></li>
+            <li><a href="evaluacion.html">5</a></li>
+        </ul>
+    </nav>
+
+    <main class="main-content">
+        <!-- Encabezado con Logos -->
+        <div class="logo-container">
+            <img src="assets/Uanl-color-negro.png" alt="UANL" class="logo left-logo">
+            <img src="assets/Logo-Excelencia-Negro.png" alt="Excelencia" class="logo right-logo">
+        </div>
+
+        <div class="content-page">
+            <h2>Graficación de Ecuaciones: Conceptos Fundamentales</h2>
+            <p>La <strong>gráfica de una ecuación</strong> es una herramienta visual esencial en matemáticas. Nos permite entender de forma intuitiva la relación entre dos variables. Cada punto en la gráfica representa una solución para la ecuación.</p>
+
+            <h3>Sistema de Coordenadas Cartesiano 🗺️</h3>
+            <p>Para graficar una ecuación, necesitamos un marco de referencia. El <strong>sistema de coordenadas cartesianas</strong>, o plano cartesiano, es ese marco. Está formado por dos líneas perpendiculares llamadas ejes.</p>
+
+            <div class="equation-box">
+                <h4>Ejes Coordenados</h4>
+                <p>$$(x, y)$$</p>
+                <ul>
+                    <li>Eje horizontal: \(x\) (abscisas)</li>
+                    <li>Eje vertical: \(y\) (ordenadas)</li>
+                    <li>Origen: \((0, 0)\)</li>
+                </ul>
+            </div>
+
+            <h3>Ecuaciones con Dos Variables</h3>
+            <p>Una <strong>ecuación con dos variables</strong> es una expresión matemática que contiene dos incógnitas, comúnmente \(x\) y \(y\).</p>
+            
+            <div class="equation-box">
+                <h4>Ejemplos de Ecuaciones</h4>
+                <ul>
+                    <li>$$y = 2x + 1$$</li>
+                    <li>$$x^2 + y^2 = 9$$</li>
+                    <li>$$y = x^3 - 4$$</li>
+                </ul>
+            </div>
+
+            <h3>Procedimiento para Graficar una Ecuación ✍️</h3>
+            <p>Aquí te mostramos los pasos para graficar una ecuación, utilizando el ejemplo $$x + 2y = 8$$.</p>
+
+            <div class="equation-box">
+                <h4>Paso 1: Despejar una variable</h4>
+                <p>$$x + 2y = 8$$</p>
+                <p>$$2y = 8 - x$$</p>
+                <p>$$y = \frac{8 - x}{2}$$</p>
+            </div>
+
+            <div class="equation-box">
+                <h4>Paso 2: Construir una tabla de valores</h4>
+                <div class="table-container">
+                    <table class="coordinate-table">
+                        <thead>
+                            <tr>
+                                <th>$$x$$</th>
+                                <th>$$y = \frac{8 - x}{2}$$</th>
+                                <th>Par Ordenado $$(x, y)$$</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>-2</td>
+                                <td>$$y = \frac{8 - (-2)}{2} = 5$$</td>
+                                <td>$$(-2, 5)$$</td>
+                            </tr>
+                            <tr>
+                                <td>0</td>
+                                <td>$$y = \frac{8 - 0}{2} = 4$$</td>
+                                <td>$$(0, 4)$$</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>$$y = \frac{8 - 2}{2} = 3$$</td>
+                                <td>$$(2, 3)$$</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="equation-box">
+                <h4>Paso 3: Situar los pares ordenados en el plano cartesiano</h4>
+                <p>Usa los pares ordenados que obtuviste para marcar los puntos en el plano. Para cada punto $$(x, y)$$:
+                <ol>
+                    <li>Comienza en el origen \((0, 0)\).</li>
+                    <li>Muévete horizontalmente a lo largo del eje \(x\) hasta el valor para \(x\) (a la derecha si es positivo, a la izquierda si es negativo).</li>
+                    <li>Luego, muévete verticalmente desde esa posición a lo largo del eje \(y\) hasta el valor caluclado para \(y\) (hacia arriba si es positivo, hacia abajo si es negativo).</li>
+                </ol></p>
+            </div>
+            
+            <div class="equation-box">
+                <h4>Paso 4: Trazar la gráfica</h4>
+                <p>Una vez que hayas situado suficientes puntos, 
+                    usa una regla para trazar una línea recta 
+                    que pase por todos ellos. 
+                    Dado que nuestra ecuación de ejemplo 
+                    es una ecuación lineal, 
+                    su gráfica siempre será una línea recta. 
+                    Si la ecuación fuera cuadrática (con \(x^2\)), 
+                    la gráfica sería una curva llamada parábola.</p>
+            </div>
+
+            <p>La línea que trazaste es la representación gráfica de la ecuación \(x + 2y = 8\).
+                 Todos los puntos en esa línea,
+                  y solo ellos, son soluciones de la ecuación.</p>
+        </div>
+                <div class="navigation-buttons">
+                    <div class="button-group">
+                        <a href="grafico.html" class="action-btn">Continuar a Práctica</a>
+                        <a href="index.html" class="action-btn secondary-btn">Volver al Inicio</a>
+                    </div>
+                </div>
+        
+    </main>
+
+    <!-- JavaScript -->
+    <script src="js/core/navigation.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            NavigationManager.init();
+        });
+    </script>
+</body>
+</html>
