@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -14,6 +15,7 @@
     <link rel="stylesheet" href="css/components/forms.css">
     <link rel="stylesheet" href="css/components/blockly-ui.css">
     <link rel="stylesheet" href="css/pages/aplicacion.css">
+    <link rel="stylesheet"  href="css/pages/grafico.css">
     
     <!-- Librerías Blockly -->
     <script src="https://www.google.com/jsapi"></script>
@@ -40,120 +42,492 @@
     </nav>
 
     <main class="main-content">
-        <div class="content-page">
+        <!-- Encabezado con Logos -->
+        <div class="logo-container">
+            <img src="assets/Uanl-color-negro.png" alt="UANL" class="logo left-logo">
+            <img src="assets/Logo-Excelencia-Negro.png" alt="Excelencia" class="logo right-logo">
+        </div>
+
+        <div class="content-page" style="max-width: 100%;">
             <h2>ABR - Analiza y construye la función de la Gráfica</h2>
             <p>Usa los bloques para crear la función que corresponde a la gráfica que se muestra. Cuando termines de construir la función, presiona "Evaluar".</p>
             
-            <!-- Navegación de Retos -->
-            <div id="reto-nav" class="reto-navigation"></div>
-            <h3 id="reto-title" class="reto-title"></h3>
+            <div id="reto-nav"></div>
+            <h3 id="reto-title"></h3>
 
-            <!-- Contenedor Principal de Retos -->
             <div id="reto-container">
                 <div class="graficas-container">
-                    <div class="chart-container">
+                    <div>
                         <h4>Gráfica del Reto</h4>
-                        <div id="reto-chart" class="chart"></div>
+                        <div id="reto-chart"></div>
                     </div>
-                    <div id="user-chart-container" class="chart-container">
+                    <div id="user-chart-container" style="display: none;">
                         <h4>Tu Gráfica</h4>
-                        <div id="user-chart" class="chart"></div>
+                        <div id="user-chart"></div>
                     </div>
                 </div>
-                
-                <div id="reto-message" class="reto-message"></div>
-                
-                <div id="button-container" class="button-container">
+                <div id="reto-message"></div>
+                <div id="button-container">
                     <button id="evaluar-btn" class="action-btn">Evaluar</button>
                     <button id="pista-btn" class="hint-button">Pista</button>
-                    <button id="siguiente-btn" class="action-btn hidden">Siguiente Reto</button>
+                    <button id="siguiente-btn" class="action-btn hidden">Siguiente</button>
                 </div>
             </div>
 
             <hr>
             
-            <!-- Display de Función -->
             <div id="functionDisplay" class="function-display"></div>
-            
-            <!-- Área de Blockly -->
             <div class="blockly-and-graph-container">
                 <div id="blocklyDiv" style="height: 400px; width: 100%;"></div>
             </div>
         </div>
     </main>
     
-    <!-- Modal de Pistas -->
-    <dialog id="pista-modal" class="modal">
+    <dialog id="pista-modal">
         <div class="modal-content">
-            <button class="close-button" onclick="AplicacionPage.cerrarModalPista()">×</button>
-            <h4>Tabla de Valores - Pista</h4>
+            <button class="close-button" id="close-pista-btn">Cerrar</button>
+            <h4>Tabla de Valores</h4>
             <div id="pista-tabla"></div>
-            <div class="button-group" style="margin-top: 1rem;">
-                <button onclick="AplicacionPage.cerrarModalPista()" class="action-btn">Cerrar</button>
-            </div>
         </div>
     </dialog>
 
-    <!-- Modal de Opciones -->
-    <dialog id="opciones-modal" class="modal">
+    <dialog id="opciones-modal">
         <div class="modal-content">
             <h3>¿Qué te gustaría hacer?</h3>
-            <p>Se detectó progreso guardado. ¿Quieres continuar donde lo dejaste o reiniciar?</p>
             <div class="button-group">
                 <button id="continuar-btn" class="btn-continuar">Continuar</button>
-                <button id="reiniciar-btn" class="btn-reiniciar">Reiniciar Todo</button>
+                <button id="reiniciar-btn" class="btn-reiniciar">Reiniciar</button>
             </div>
         </div>
     </dialog>
 
-    <!-- Bloques Iniciales (XML) -->
     <xml xmlns="https://developers.google.com/blockly/xml" id="startBlocks" style="display: none">
         <block type="graph_set_y1" deletable="false" x="100" y="100">
             <value name="VALUE">
-                <block type="math_number">
-                    <field name="NUM">0</field>
-                </block>
+                <block type="math_number"><field name="NUM">0</field></block>
             </value>
         </block>
     </xml>
     
-    <!-- JavaScript Core -->
-    <script src="js/core/blockly-core.js"></script>
-    <script src="js/core/chart-core.js"></script>
-    <script src="js/core/math-utils.js"></script>
-    <script src="js/core/navigation.js"></script>
-    
-    <!-- JavaScript Components -->
-    <script src="js/components/function-display.js"></script>
-    <script src="js/components/blockly-setup.js"></script>
-    
-    <!-- JavaScript Página Específica -->
-    <script src="js/pages/aplicacion.js"></script>
-    
     <script>
+        //  Definicion de los retos que se le pondran al alumno
+        const retos = [
+            {
+                formula: 'x + 4',
+                nombre: 'Función Lineal',
+                plotXMin: -10, plotXMax: 10,
+                viewXMin: -10, viewXMax: 10,
+                viewYMin: -10, viewYMax: 10,
+                bloques: '<block type="math_arithmetic"><field name="OP">ADD</field><value name="A"><block type="graph_get_x"></block></value><value name="B"><block type="math_number"><field name="NUM">4</field></block></value></block>'
+            },
+            {
+                formula: 'Math.pow(x, 2) + 6',
+                nombre: 'Función Cuadrática',
+                plotXMin: -20, plotXMax: 20,
+                viewXMin: -10, viewXMax: 10,
+                viewYMin: 0, viewYMax: 100,
+                bloques: '<block type="math_arithmetic"><field name="OP">ADD</field><value name="A"><block type="math_arithmetic"><field name="OP">POWER</field><value name="A"><block type="graph_get_x"></block></value><value name="B"><block type="math_number"><field name="NUM">2</field></block></value></block></value><value name="B"><block type="math_number"><field name="NUM">6</field></block></value></block>'
+            },
+            {
+                formula: 'Math.sqrt(x)',
+                nombre: 'Función Raíz Cuadrada',
+                plotXMin: 0, plotXMax: 20,
+                viewXMin: 0, viewXMax: 20,
+                viewYMin: 0, viewYMax: 10,
+                bloques: '<block type="math_single"><field name="OP">ROOT</field><value name="NUM"><block type="graph_get_x"></block></value></block>'
+            },
+            {
+                formula: 'Math.pow(x, 3) + 2',
+                nombre: 'Función Cúbica',
+                plotXMin: -10, plotXMax: 10,
+                viewXMin: -10, viewXMax: 10,
+                viewYMin: -100, viewYMax: 100,
+                bloques: '<block type="math_arithmetic"><field name="OP">ADD</field><value name="A"><block type="math_arithmetic"><field name="OP">POWER</field><value name="A"><block type="graph_get_x"></block></value><value name="B"><block type="math_number"><field name="NUM">3</field></block></value></block></value><value name="B"><block type="math_number"><field name="NUM">2</field></block></value></block>'
+            },
+            {
+                formula: '(x - 5) / x',
+                nombre: 'Función Racional',
+                plotXMin: -10, plotXMax: 10,
+                viewXMin: -10, viewXMax: 10,
+                viewYMin: -20, viewYMax: 20,
+                bloques: '<block type="math_arithmetic"><field name="OP">MINUS</field><value name="A"><block type="graph_get_x"></block></value><value name="B"><block type="math_arithmetic"><field name="OP">DIVIDE</field><value name="A"><block type="math_number"><field name="NUM">5</field></block></value><value name="B"><block type="graph_get_x"></block></value></block></value></block>'
+            }
+        ];   //  Fin de la definicion de los retos
+        
+        //  ------------------------------------------------Variables globales
+        let retoActual = 0;
+        let retosCompletados = 0;
+        let workspace = null;
+        let messageDiv;
+        let userChartContainer;
+        let retoTitle;
+        let evaluarBtn;
+        let siguienteBtn;
+        let pistaBtn;
+        let pistaModal;
+        let pistaTabla;
+        let opcionesModal;
+        // ---------------------------------------------------fin de variables globales
+        
+        //  -----------------------------------Definicion del toolbox y los bloques personalizados
+        const toolbox = {
+            kind: 'categoryToolbox',
+            contents: [
+                { 
+                    kind: 'category', 
+                    name: 'Matemáticas', 
+                    colour: '%{BKY_MATH_HUE}', 
+                    contents: [
+                        { kind: 'block', type: 'math_number' }, 
+                        { kind: 'block', type: 'math_arithmetic' },  
+                        { kind: 'block', type: 'math_single' }, 
+                        { kind: 'block', type: 'math_fraction' }
+                    ] 
+                },
+                { 
+                    kind: 'category', 
+                    name: 'Variables', 
+                    colour: '%{BKY_VARIABLES_HUE}', 
+                    contents: [
+                        { kind: 'block', type: 'graph_get_x' }
+                    ] 
+                }
+            ],
+        };
+        //  ---------------------------------------------------Fin del toolbox y bloques personalizados
+
+        //  ---------------------------------------------------Definicion de los bloques personalizados iniciales de Blockly
+        Blockly.defineBlocksWithJsonArray([
+            { 
+                type: 'graph_get_x', 
+                message0: 'x', 
+                output: 'Number', 
+                colour: Blockly.Msg['VARIABLES_HUE'] 
+            },
+            { 
+                type: 'graph_set_y1', 
+                message0: 'y = %1', 
+                args0: [{ type: 'input_value', name: 'VALUE', check: 'Number' }], 
+                colour: Blockly.Msg['VARIABLES_HUE'] 
+            },
+            {
+                type: 'math_fraction',
+                message0: 'fracción %1 / %2',
+                args0: [
+                    { type: 'input_value', name: 'NUMERATOR', check: 'Number' },
+                    { type: 'input_value', name: 'DENOMINATOR', check: 'Number' },
+                ],
+                output: 'Number',
+                colour: Blockly.Msg['MATH_HUE'],
+                tooltip: 'Calcula el valor de una fracción.',
+                helpUrl: '',
+            },
+        ]);
+        //  ---------------------------------------------------Fin de la definicion de los bloques personalizados iniciales de Blockly
+        
+        //  ---------------------------------------------------Definicion de la generacion de codigo javascript para los bloques personalizados
+        javascript.javascriptGenerator.forBlock['graph_get_x'] = function (block) { 
+            return ['x', javascript.Order.ATOMIC]; 
+        };
+        
+        javascript.javascriptGenerator.forBlock['graph_set_y1'] = function (block, generator) {
+            block.setDeletable(false);
+            var argument0 = generator.valueToCode(block, 'VALUE', javascript.Order.ASSIGNMENT) || '0';
+            return 'y1 = ' + argument0 + ';';
+        };
+        
+        javascript.javascriptGenerator.forBlock['math_fraction'] = function (block, generator) {
+            var numerator = generator.valueToCode(block, 'NUMERATOR', javascript.Order.DIVISION) || '0';
+            var denominator = generator.valueToCode(block, 'DENOMINATOR', javascript.Order.DIVISION) || '0';
+            var code = '(' + numerator + ' / ' + denominator + ')';
+            return [code, javascript.Order.DIVISION];
+        };
+        //  ---------------------------------------------------Fin de la definicion de la generacion de codigo javascript para los bloques personalizados
+        
+        
+        //  ---------------------------------------------------Funciones principales de la aplicacion
+        
+        //--------------------------------Funcion para convertir el codigo javascript a formato latex
+        function formatAsLatex(code) {
+            let latexCode = code.replace(/^y1\s*=\s*/, '').replace(/;$/, '');
+            latexCode = latexCode.replace(/Math.pow\(([^,]+),\s*2\)/g, '$1^2');
+            latexCode = latexCode.replace(/Math.pow\(([^,]+),\s*3\)/g, '$1^3');
+            latexCode = latexCode.replace(/Math.sqrt\((.*?)\)/g, '\\sqrt{$1}');
+            latexCode = latexCode.replace(/\((\d+)\s*\/\s*(\d+)\)/g, '\\frac{$1}{$2}');
+            return `$$y = ${latexCode}$$`;
+        }
+        
+        //--------------------------------Funcion para actualizar la visualizacion de la funcion en formato latex
+        function updateFunctionDisplay() {
+            const code = javascript.javascriptGenerator.workspaceToCode(workspace);
+            const latex = formatAsLatex(code);
+            const displayElement = document.getElementById('functionDisplay');
+            displayElement.innerHTML = latex;
+            MathJax.typesetPromise([displayElement]);
+        }
+        
+        //--------------------------------Funcion para graficar la funcion dada un rango de x    
+        function plotGraph(formula, xMin, xMax) {
+            let table = [['x', 'y']];
+            for (let x = xMin; x <= xMax; x = Math.round((x + 0.1) * 10) / 10) {
+                let y;
+                try {
+                    const f = new Function('x', `return ${formula};`);
+                    y = f(x);
+                } catch (e) {
+                    y = NaN;
+                }
+                if (!isNaN(y)) {
+                    y = Math.round(y * Math.pow(10, 14)) / Math.pow(10, 14);
+                    table.push([x, y]);
+                }
+            }
+            if (table.length === 1) table.push([0, 0]);
+            return table;
+        }
+        
+        //--------------------------------Funcion para evaluar si la funcion creada por el alumno es correcta
+        function evaluarReto() {
+            const reto = retos[retoActual];
+            const formulaAlumnoRaw = javascript.javascriptGenerator.workspaceToCode(workspace);
+            const formulaAlumno = formulaAlumnoRaw.replace(/y1\s*=\s*/, '').replace(/;$/, '').trim();
+
+            const dataUsuario = google.visualization.arrayToDataTable(plotGraph(formulaAlumno, reto.plotXMin, reto.plotXMax));
+            userChartContainer.style.display = 'block';
+
+            const userChartOptions = {
+                hAxis: { title: 'x', viewWindow: { min: reto.viewXMin, max: reto.viewXMax } },
+                vAxis: { title: 'y', viewWindow: { min: reto.viewYMin, max: reto.viewYMax } },
+                legend: { position: 'none' },
+                series: { 0: { color: 'blue' } }
+            };
+
+            new google.visualization.LineChart(document.getElementById('user-chart')).draw(dataUsuario, userChartOptions);
+
+            const puntosReto = plotGraph(reto.formula, reto.plotXMin, reto.plotXMax);
+            const puntosAlumno = plotGraph(formulaAlumno, reto.plotXMin, reto.plotXMax);
+            
+            const sonIguales = JSON.stringify(puntosReto.map(p => p.map(n => Math.round(n * 1000) / 1000))) === JSON.stringify(puntosAlumno.map(p => p.map(n => Math.round(n * 1000) / 1000)));
+
+            messageDiv.className = '';
+
+            if (sonIguales) {
+                messageDiv.textContent = `¡Correcto! Has adivinado la función. 🎉`;
+                messageDiv.classList.add('correct');
+                
+                if (retoActual === retosCompletados) {
+                    retosCompletados++;
+                    localStorage.setItem('retosCompletados', retosCompletados);
+                }
+                
+                evaluarBtn.classList.add('hidden');
+                pistaBtn.classList.add('hidden');
+                siguienteBtn.classList.remove('hidden');
+            } else {
+                messageDiv.textContent = 'Inténtalo de nuevo. La gráfica no es la correcta.';
+                messageDiv.classList.add('incorrect');
+            }
+        }
+        
+        //--------------------------------Funcion para cargar el siguiente reto
+        function cargarSiguienteReto() {
+            if (retoActual < retos.length - 1) {
+                cargarReto(retoActual + 1);
+            } else {
+                messageDiv.textContent = '¡Felicidades! Has completado todos los retos.';
+                messageDiv.classList.add('correct');
+                evaluarBtn.classList.add('hidden');
+                pistaBtn.classList.add('hidden');
+                siguienteBtn.classList.add('hidden');
+            }
+        }
+        
+        //--------------------------------Funcion para cargar un reto especifico
+        function cargarReto(index) {
+            if (index > retosCompletados) {
+                return;
+            }
+
+            retoActual = index;
+            messageDiv.textContent = '';
+            messageDiv.className = '';
+            userChartContainer.style.display = 'none';
+
+            evaluarBtn.classList.remove('hidden');
+            pistaBtn.classList.remove('hidden');
+            siguienteBtn.classList.add('hidden');
+
+            const reto = retos[retoActual];
+            retoTitle.textContent = `Reto ${retoActual + 1}: ${reto.nombre}`;
+            
+            const dataReto = google.visualization.arrayToDataTable(plotGraph(reto.formula, reto.plotXMin, reto.plotXMax));
+            const retoChartOptions = {
+                hAxis: { title: 'x', viewWindow: { min: reto.viewXMin, max: reto.viewXMax } },
+                vAxis: { title: 'y', viewWindow: { min: reto.viewYMin, max: reto.viewYMin, max: reto.viewYMax } },
+                legend: { position: 'none' },
+                series: { 0: { color: 'green' } }
+            };
+
+            new google.visualization.LineChart(document.getElementById('reto-chart')).draw(dataReto, retoChartOptions);
+
+            workspace.clear();
+            const startBlockXml = document.getElementById('startBlocks');
+            Blockly.Xml.domToWorkspace(startBlockXml, workspace);
+            
+            actualizarNavegacion();
+            updateFunctionDisplay();
+        }
+        
+        //--------------------------------Funcion para actualizar la navegacion de retos
+        function actualizarNavegacion() {
+            const navDiv = document.getElementById('reto-nav');
+            navDiv.innerHTML = '';
+
+            for (let i = 0; i < retos.length; i++) {
+                const link = document.createElement('a');
+                link.href = '#';
+                link.textContent = i + 1;
+                link.onclick = (e) => {
+                    e.preventDefault();
+                    cargarReto(i);
+                };
+
+                if (i === retoActual) {
+                    link.classList.add('active');
+                }
+                if (i < retosCompletados) {
+                    link.classList.add('completed');
+                }
+                if (i > retosCompletados) {
+                    link.classList.add('disabled');
+                }
+
+                navDiv.appendChild(link);
+            }
+        }
+        
+        //--------------------------------Funcion para mostrar la pista (tabla de valores)
+        function mostrarPista() {
+            const reto = retos[retoActual];
+            let tablaHTML = '<table><thead><tr><th>X</th><th>Y</th></tr></thead><tbody>';
+            const valoresX = [-2, -1, 0, 1, 2, 3];
+            const f = new Function('x', `return ${reto.formula};`);
+            
+            valoresX.forEach(x => {
+                let y = f(x);
+                y = Math.round(y * 100) / 100;
+                tablaHTML += `<tr><td>${x}</td><td>${y}</td></tr>`;
+            });
+            
+            tablaHTML += '</tbody></table>';
+            pistaTabla.innerHTML = tablaHTML;
+            pistaModal.showModal();
+        }
+        
+        //--------------------------------Funcion para cerrar el modal de pista
+        function cerrarModalPista() {
+            pistaModal.close();
+        }
+        
+        //--------------------------------Funcion para mostrar el modal de opciones al cargar la pagina si hay progreso guardado
+        function mostrarOpciones() {
+            opcionesModal.showModal();
+        }
+        
+        //--------------------------------Funcion para cargar el avance guardado
+        function cargarAvance() {
+            opcionesModal.close();
+            cargarReto(retosCompletados);
+        }
+        
+        //--------------------------------Funcion para reiniciar el avance guardado
+        function reiniciarAvance() {
+            opcionesModal.close();
+            localStorage.removeItem('retosCompletados');
+            retosCompletados = 0;
+            window.location.reload();
+        }
+
+        //--------------------------------Funcion de inicializacion de la aplicacion
+        function init() {
+            messageDiv = document.getElementById('reto-message');
+            userChartContainer = document.getElementById('user-chart-container');
+            retoTitle = document.getElementById('reto-title');
+            evaluarBtn = document.getElementById('evaluar-btn');
+            siguienteBtn = document.getElementById('siguiente-btn');
+            pistaBtn = document.getElementById('pista-btn');
+            pistaModal = document.getElementById('pista-modal');
+            pistaTabla = document.getElementById('pista-tabla');
+            opcionesModal = document.getElementById('opciones-modal');
+            
+            const savedProgress = localStorage.getItem('retosCompletados');
+            if (savedProgress !== null) {
+                retosCompletados = parseInt(savedProgress);
+            }
+
+            workspace = Blockly.inject('blocklyDiv', {
+                media: 'https://unpkg.com/blockly@12.0.0/media/',
+                toolbox: toolbox,
+                theme: Blockly.Theme.Modern,
+                renderer: 'zelos',
+                collapse: false,
+                disable: false,
+                zoom: {
+                    controls: true,
+                    wheel: true,
+                    startScale: 1.0,
+                    maxScale: 3,
+                    minScale: 0.3,
+                    scaleSpeed: 1.2
+                },
+            });
+
+            const startBlockXml = document.getElementById('startBlocks');
+            Blockly.Xml.domToWorkspace(startBlockXml, workspace);
+
+            workspace.addChangeListener(evaluarCambios);
+            workspace.addChangeListener(Blockly.Events.disableOrphans);
+            
+            checkProgressAndShowDialog();
+            
+            window.addEventListener('resize', () => Blockly.svgResize(workspace));
+        }
+
+        function evaluarCambios() {
+            const code = javascript.javascriptGenerator.workspaceToCode(workspace);
+            updateFunctionDisplay();
+        }
+        
+        function checkProgressAndShowDialog() {
+            if (retosCompletados > 0 && !opcionesModal.open) {
+                mostrarOpciones();
+            } else {
+                cargarReto(0);
+            }
+        }
+        
+        // Configurar event listeners para los nuevos botones
         document.addEventListener('DOMContentLoaded', function() {
-            // Inicializar navegación
-            NavigationManager.init();
+            // Configurar botones
+            document.getElementById('evaluar-btn').addEventListener('click', evaluarReto);
+            document.getElementById('pista-btn').addEventListener('click', mostrarPista);
+            document.getElementById('siguiente-btn').addEventListener('click', cargarSiguienteReto);
+            document.getElementById('close-pista-btn').addEventListener('click', cerrarModalPista);
+            document.getElementById('continuar-btn').addEventListener('click', cargarAvance);
+            document.getElementById('reiniciar-btn').addEventListener('click', reiniciarAvance);
             
-            // Configurar botones del modal de opciones
-            document.getElementById('continuar-btn')?.addEventListener('click', function() {
-                AplicacionPage.cerrarModalOpciones();
-                AplicacionPage.cargarReto(AplicacionPage.retosCompletados);
-            });
-            
-            document.getElementById('reiniciar-btn')?.addEventListener('click', function() {
-                AplicacionPage.cerrarModalOpciones();
-                AplicacionPage.reiniciarProgreso();
-            });
+            // Inicializar cuando Google Charts esté listo
+            if (typeof google === 'object') {
+                google.load('visualization', '1', { packages: ['corechart'] });
+                google.setOnLoadCallback(init);
+            }
         });
         
-        // Función para reiniciar progreso
-        AplicacionPage.reiniciarProgreso = function() {
-            localStorage.removeItem('aplicacion-progress');
-            this.retosCompletados = 0;
-            this.retoActual = 0;
-            this.cargarReto(0);
-        };
+        window.addEventListener('pageshow', (event) => {
+            if (event.persisted) {
+                checkProgressAndShowDialog();
+            }
+        });
     </script>
 </body>
 </html>
