@@ -44,20 +44,63 @@ const FunctionDisplay = {
         this.currentFunction = code;
         
         try {
-            const latex = MathUtils.jsToLatex(code);
-            this.displayElement.innerHTML = latex;
-            
-            // Reprocesar MathJax si está disponible
-            this.renderMathJax();
+            // USAR FORMATO SIMPLE EN LUGAR DE LaTeX PARA EVITAR "frac"
+            const simpleExpression = this.convertToSimpleFormat(code);
+            this.showPlainText(simpleExpression);
             
         } catch (error) {
-            console.error('Error al convertir a LaTeX:', error);
+            console.error('Error al convertir a formato simple:', error);
             this.showError('Error en la función');
         }
     },
 
     /**
-     * Reprocesar MathJax
+     * Convertir código JavaScript a formato simple legible
+     * @param {string} code - Código JavaScript de Blockly
+     * @returns {string} Expresión en formato simple
+     */
+    convertToSimpleFormat: function(code) {
+        if (!code) return '';
+        
+        // Extraer la expresión después de "y1 = " y remover el punto y coma
+        let expression = code.replace(/^y1\s*=\s*/, '').replace(/;\s*$/, '');
+        
+        // Si la expresión está entre paréntesis, removerlos
+        expression = expression.replace(/^\((.*)\)$/, '$1');
+        
+        // Simplificar operaciones matemáticas comunes
+        expression = this.simplifyMathOperations(expression);
+        
+        return expression;
+    },
+
+    /**
+     * Simplificar operaciones matemáticas para mejor legibilidad
+     * @param {string} expression - Expresión matemática
+     * @returns {string} Expresión simplificada
+     */
+    simplifyMathOperations: function(expression) {
+        let simplified = expression;
+        
+        // Simplificar Math.pow a notación de exponente
+        simplified = simplified.replace(/Math\.pow\(([^,]+),\s*2\)/g, '($1)²');
+        simplified = simplified.replace(/Math\.pow\(([^,]+),\s*3\)/g, '($1)³');
+        simplified = simplified.replace(/Math\.pow\(([^,]+),\s*(\d+)\)/g, '($1)^$2');
+        
+        // Simplificar Math.sqrt a √
+        simplified = simplified.replace(/Math\.sqrt\(([^)]+)\)/g, '√($1)');
+        
+        // Asegurar que las fracciones se muestren como a/b en lugar de frac{a}{b}
+        simplified = simplified.replace(/\\frac\{([^}]+)\}\{([^}]+)\}/g, '$1/$2');
+        
+        // Remover espacios innecesarios alrededor de operadores
+        simplified = simplified.replace(/\s*([\+\-\*\/\^])\s*/g, ' $1 ');
+        
+        return simplified.trim();
+    },
+
+    /**
+     * Reprocesar MathJax (mantenido por si se necesita en el futuro)
      */
     renderMathJax: function() {
         if (window.MathJax && typeof MathJax.typesetPromise === 'function') {
@@ -81,15 +124,26 @@ const FunctionDisplay = {
     },
 
     /**
-     * Mostrar función en formato legible
+     * Mostrar función en formato legible (AHORA ES EL MÉTODO PRINCIPAL)
      * @param {string} functionText - Texto de la función
      */
     showPlainText: function(functionText) {
         if (this.displayElement) {
             this.displayElement.innerHTML = 
-                `<div class="function-plain" style="font-family: monospace; background: #f8f9fa; padding: 10px; border-radius: 4px;">
-                    y = ${functionText}
+                `<div class="function-plain" style="font-family: 'Arial', sans-serif; font-size: 18px; background: #f8f9fa; padding: 15px; border-radius: 8px; border-left: 4px solid #3498db;">
+                    <strong>Y = ${functionText}</strong>
                  </div>`;
+        }
+    },
+
+    /**
+     * Mostrar función en formato LaTeX (opcional, para casos específicos)
+     * @param {string} latexCode - Código LaTeX
+     */
+    showLatex: function(latexCode) {
+        if (this.displayElement) {
+            this.displayElement.innerHTML = `$$${latexCode}$$`;
+            this.renderMathJax();
         }
     },
 
@@ -112,12 +166,21 @@ const FunctionDisplay = {
     },
 
     /**
+     * Obtener expresión simplificada
+     * @returns {string} Expresión en formato simple
+     */
+    getSimpleExpression: function() {
+        return this.convertToSimpleFormat(this.currentFunction);
+    },
+
+    /**
      * Verificar si hay una función válida
      * @returns {boolean} True si hay función válida
      */
     isValid: function() {
         return this.currentFunction && 
                this.currentFunction.trim() !== '' && 
-               this.currentFunction !== 'y1 = 0;';
+               this.currentFunction !== 'y1 = 0;' &&
+               this.currentFunction !== 'y1 = ;';
     }
 };
