@@ -1,9 +1,9 @@
 /* ===== INTERFAZ DE BLOCKLY PERSONALIZADA ===== */
 .blockly-and-graph-container {
     display: flex;
-    gap: 20px;
-    align-items: stretch;
-    margin: 20px 0;
+    gap: var(--spacing-lg); /* Usar la variable es más consistente */
+    align-items: stretch; /* stretch es mejor que flex-start para que los hijos tengan la misma altura */
+    margin: var(--spacing-lg) 0;
     width: 100%;
 }
 
@@ -24,13 +24,12 @@
 
 
 
-
-
-/* Responsive */
+/* Media query para responsive se mantiene igual */
 @media (max-width: 968px) {
     .blockly-and-graph-container {
         flex-direction: column;
     }
+}
     
     #blocklyDiv,
     #visualization {

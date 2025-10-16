@@ -1,0 +1,22 @@
+/* Header con logos */
+.logo-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 700px;
+    padding: var(--spacing-lg) 0;
+    margin: 0 auto;
+    animation: fadeIn 1.5s ease-in-out;
+}
+
+.logo {
+    width: 25%;
+    height: auto;
+    max-height: 150px;
+    transition: transform 0.3s ease;
+}
+
+.logo:hover {
+    transform: scale(1.05);
+}
