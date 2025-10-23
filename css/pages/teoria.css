@@ -1,0 +1,43 @@
+
+        /* Estilos específicos para teoría */
+        .equation-box {
+            background: var(--light-gray);
+            border: 1px solid #e0e6ed;
+            padding: var(--spacing-lg);
+            margin: var(--spacing-lg) 0;
+            border-radius: var(--border-radius);
+            border-left: 4px solid var(--primary-color);
+        }
+        .navigation-buttons {
+            text-align: center;
+            margin: var(--spacing-lg) 0;
+        }  
+        .table-container {
+            overflow-x: auto;
+            margin: var(--spacing-lg) 0;
+        }
+
+        .coordinate-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .coordinate-table th, 
+        .coordinate-table td {
+            border: 1px solid #ddd;
+            padding: var(--spacing-sm);
+            text-align: center;
+        }
+
+        .coordinate-table th {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .katex {
+            white-space: nowrap;
+        }
+        .content-page p {
+            text-align: justify;
+            text-justify: inter-word;
+        }

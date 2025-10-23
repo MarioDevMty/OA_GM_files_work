@@ -1,0 +1,22 @@
+
+        /* Ajuste específico para los logos en index.html */
+        .logo-container {
+            margin-top: 30px;
+            margin-bottom: 1rem;
+        }
+        
+        /* Asegurar que el contenido principal tenga espacio suficiente */
+        .main-content {
+            padding-top: 0; /* Reducimos el padding superior ya que los logos tienen su propio margen */
+        }
+        .navigation-button {
+            text-align: center;
+        }   
+        .content-page h2 {
+            font-size: 2.5rem;
+        color: #34495e;
+        margin-bottom: 10px;
+        border-bottom: 2px solid #3498db;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1.5rem;
+    }
